@@ -2,7 +2,7 @@ import * as ts from 'typescript'
 
 import { Macros } from '../types'
 
-export const visitNodeAndeExtractMacros = (
+export const visitNodeAndExtractMacros = (
   context: ts.TransformationContext,
   macrosIdentifier: string,
   source: ts.SourceFile,

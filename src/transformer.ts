@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 
 import { TransformerConfigDecoder } from './decoders'
-import { visitNodeAndeExtractMacros } from './visitors/extract'
+import { visitNodeAndExtractMacros } from './visitors/extract'
 import { replaceMacrosFromContext } from './visitors/replace'
 import { isLeft } from 'fp-ts/Either'
 
@@ -16,7 +16,7 @@ const transformerProgram = (program: ts.Program, config: unknown) => {
 
     const transformerFactory: ts.TransformerFactory<ts.SourceFile> = context => {
       return sourceFile => {
-        const [updatedSource, macros] = visitNodeAndeExtractMacros(
+        const [updatedSource, macros] = visitNodeAndExtractMacros(
           context,
           macrosIdentifier,
           sourceFile,
