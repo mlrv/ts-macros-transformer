@@ -1,4 +1,5 @@
 import * as ts from 'typescript'
+import { createSimpleArrowFunction } from '../utils/factory'
 
 import { Macros } from '../utils/types'
 
@@ -75,23 +76,8 @@ export const replaceMacrosFromContext =
           )
         }
 
-        // abstract this abomination
-        replacedNode = context.factory.createArrowFunction(
-          undefined,
-          undefined,
-          [
-            context.factory.createParameterDeclaration(
-              undefined,
-              undefined,
-              undefined,
-              context.factory.createIdentifier('f'),
-              undefined,
-              undefined,
-              undefined,
-            ),
-          ],
-          undefined,
-          context.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+        replacedNode = createSimpleArrowFunction(context)(
+          ['f'],
           context.factory.createCallExpression(macro, undefined, [
             node.expression,
             context.factory.createIdentifier('f'),
