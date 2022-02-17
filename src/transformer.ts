@@ -1,6 +1,6 @@
 import * as ts from 'typescript'
 
-import { TransformerConfigDecoder } from './decoders'
+import { TransformerConfigDecoder } from './utils/decoders'
 import { visitNodeAndExtractMacros } from './visitors/extract'
 import { replaceMacrosFromContext } from './visitors/replace'
 import { isLeft } from 'fp-ts/Either'

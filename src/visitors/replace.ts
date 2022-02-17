@@ -1,6 +1,6 @@
 import * as ts from 'typescript'
 
-import { Macros } from '../types'
+import { Macros } from '../utils/types'
 
 export const replaceMacrosFromContext =
   (
