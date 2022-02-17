@@ -51,10 +51,60 @@ export const replaceMacrosFromContext =
       return ts.visitEachChild(replacedNode, replaceMacros, context)
     }
 
-    // handle some(1).map
-    // TODO: what should I do with these?
+    // <expression>.<expression>
+    // e.g. some(1).map
+    // TODO: is there a need to check the exact name of the access expression?
     if (ts.isPropertyAccessExpression(node) && !ts.isCallExpression(node.parent)) {
-      return node
+      // TODO: extract common logic
+      const symbol = checker.getSymbolAtLocation(node)
+      const tags = symbol?.getJsDocTags()
+      const macroSyntaxFlag = tags?.find(t => t.name === macrosSyntaxFlag)
+      const macroLink = macroSyntaxFlag?.text?.find(t => t.kind === 'linkText')?.text?.trim()
+
+      let replacedNode: ts.Node = node
+
+      if (!!macroLink) {
+        const macro = macros.get(macroLink)
+        const fileName = node.getSourceFile().fileName
+
+        if (!macro) {
+          throw new Error(
+            `No macro was defined for ${macroLink}. Registered macros are ${[...macros.keys()].join(
+              ', ',
+            )}`,
+          )
+        }
+
+        // abstract this abomination
+        replacedNode = context.factory.createArrowFunction(
+          undefined,
+          undefined,
+          [
+            context.factory.createParameterDeclaration(
+              undefined,
+              undefined,
+              undefined,
+              context.factory.createIdentifier('f'),
+              undefined,
+              undefined,
+              undefined,
+            ),
+          ],
+          undefined,
+          context.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+          context.factory.createCallExpression(macro, undefined, [
+            node.expression,
+            context.factory.createIdentifier('f'),
+          ]),
+        )
+
+        // TODO: make logger configurable
+        console.log(
+          `Replaced ${node.name.escapedText} call with macro ${macroLink} in file ${fileName}`,
+        )
+      }
+
+      return ts.visitEachChild(replacedNode, replaceMacros, context)
     }
 
     return ts.visitEachChild(node, replaceMacros, context)

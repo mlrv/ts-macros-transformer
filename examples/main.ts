@@ -18,6 +18,9 @@ const before = source
   .map(x => x + 'foobar')
   .getOrElse(() => 'loool')
 
+const m = some(50).map
+const a = m(x => x + 12)
+
 const somethingThatShouldNotBetouched = [1, 2, 3].map(x => x + 1).map(x => x.toString())
 
-console.log(before, somethingThatShouldNotBetouched)
+console.log(before, somethingThatShouldNotBetouched, a)
